@@ -109,6 +109,16 @@ public class RichTextState internal constructor(
      */
     public val selectedLinkUrl: String? get() = (currentAppliedRichSpanStyle as? RichSpanStyle.Link)?.url
 
+    public val allLinks: List<Pair<String?, TextRange>>
+        get () =
+            richParagraphList.flatMap { paragraph ->
+                paragraph.children.mapNotNull {
+                    val url = (it.richSpanStyle as? RichSpanStyle.Link)?.url ?: return@mapNotNull null
+
+                    Pair(url, it.textRange)
+                }
+            }
+
     @Deprecated(
         message = "Use isCodeSpan instead",
         replaceWith = ReplaceWith("isCodeSpan"),
